@@ -1,0 +1,10 @@
+{
+  "type": "iconify:simple",
+  "group": "iconify:test",
+  "icon": {
+    "texture": "minecraft:item/apple",
+    "text": {
+      "text": "Test"
+    }
+  }
+}
