@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.Optional;
+
 public interface IIcon {
     ResourceLocation getId();
 
@@ -13,7 +15,7 @@ public interface IIcon {
 
     ResourceLocation getIconTexture();
 
-    ITextComponent getIconText();
+    Optional<ITextComponent> getIconText(ItemStack stack);
 
     boolean test(ItemStack stack);
 }

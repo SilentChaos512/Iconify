@@ -50,3 +50,9 @@ TODO
     versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"
+[[dependencies.iconify]]
+    modId="silentgear"
+    mandatory=false
+    versionRange="[2.1,)"
+    ordering="NONE"
+    side="BOTH"

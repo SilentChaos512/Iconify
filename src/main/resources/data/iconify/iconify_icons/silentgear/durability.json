@@ -1,0 +1,12 @@
+{
+  "type": "iconify:gear_type",
+  "gear_type": "all",
+  "group": "iconify:silentgear",
+  "icon": {
+    "texture": "minecraft:item/diamond",
+    "text": {
+      "function": "iconify:gear_stat",
+      "stat": "silentgear:durability"
+    }
+  }
+}

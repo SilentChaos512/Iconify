@@ -111,6 +111,9 @@ repositories {
     maven {
         url "https://dl.bintray.com/silentchaos512/silent-lib"
     }
+    maven {
+        url "https://dl.bintray.com/silentchaos512/silent-utils"
+    }
     // Silent Gear
     maven {
         url "https://dl.bintray.com/silentchaos512/silent-gear"
@@ -151,6 +154,7 @@ dependencies {
         exclude module: 'forge'
         exclude module: 'jei-1.16.1'
         exclude module: 'silent-lib-1.16.1'
+        exclude module: 'silents-mechanisms-1.16.1'
     }
 
     /*runtimeOnly("net.silentchaos512:silents-mechanisms-${project.mc_version}:0.+") {

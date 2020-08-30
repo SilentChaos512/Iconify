@@ -18,6 +18,8 @@ import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.icon.IconManager;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Optional;
+
 @Mod.EventBusSubscriber(modid = Iconify.MOD_ID, value = Dist.CLIENT)
 public final class TooltipHandler {
     private TooltipHandler() {}
@@ -28,8 +30,6 @@ public final class TooltipHandler {
             return;
         }
 
-        Minecraft mc = Minecraft.getInstance();
-
         int x = event.getX() - 2;
         int y = event.getY() - 14;
 
@@ -39,20 +39,27 @@ public final class TooltipHandler {
                 x += 11;
 
                 // render text
-                ITextComponent text = icon.getIconText();
-                int length = event.getFontRenderer().func_238414_a_(text);
-                if (length > 0) {
-                    event.getMatrixStack().push();
-                    float scale = 0.7f;
-                    event.getMatrixStack().scale(scale, scale, scale);
-                    float xScaled = x / scale;
-                    float yScaled = y / scale + 4;
-                    event.getFontRenderer().drawStringWithShadow(event.getMatrixStack(), text.getString(), xScaled, yScaled, -1);
-                    event.getMatrixStack().pop();
-                    x += Math.round(length * scale);
+                Optional<ITextComponent> text = icon.getIconText(event.getStack());
+                if (text.isPresent()) {
+                    x += renderText(event, text.get(), x, y);
+                }
+
+                if (x > event.getX() + event.getWidth()) {
+                    x = event.getX();
+                    y -= 11;
                 }
             }
         }
+    }
+
+    private static int renderText(RenderTooltipEvent event, ITextComponent text, int x, int y) {
+        event.getMatrixStack().push();
+        float scale = 0.7f;
+        event.getMatrixStack().scale(scale, scale, scale);
+        event.getFontRenderer().func_238407_a_(event.getMatrixStack(), text, x / scale, y / scale + 4, -1);
+        event.getMatrixStack().pop();
+        int length = event.getFontRenderer().func_238414_a_(text);
+        return Math.round(length * scale);
     }
 
     public static void renderTexture(ResourceLocation texture, float scale, int x, int y, int width, int height) {

@@ -1,5 +1,6 @@
 package net.silentchaos512.iconify.icon.type;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,19 +8,22 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
+import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.icon.IconSerializers;
+import net.silentchaos512.iconify.icon.function.EmptyTextFunction;
+import net.silentchaos512.iconify.icon.function.IconFunctions;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public class SimpleIcon implements IIcon {
     private final ResourceLocation iconId;
     String group = "";
     ResourceLocation texture;
-    ITextComponent text;
+    ITextFunction text = EmptyTextFunction.INSTANCE;
 
     public SimpleIcon(ResourceLocation iconId) {
         this.iconId = iconId;
@@ -41,8 +45,8 @@ public class SimpleIcon implements IIcon {
     }
 
     @Override
-    public ITextComponent getIconText() {
-        return text;
+    public Optional<ITextComponent> getIconText(ItemStack stack) {
+        return text.getText(stack);
     }
 
     @Override
@@ -75,8 +79,10 @@ public class SimpleIcon implements IIcon {
                 String texturePath = JSONUtils.getString(iconObj, "texture");
                 t.texture = parseTexturePath(texturePath);
 
-                JsonObject textJson = iconObj.getAsJsonObject("text");
-                t.text = textJson != null ? ITextComponent.Serializer.func_240641_a_(textJson) : StringTextComponent.EMPTY;
+                JsonElement textJson = iconObj.get("text");
+                if (textJson != null) {
+                    t.text = IconFunctions.deserialize(textJson);
+                }
             }
 
             return t;
@@ -98,7 +104,9 @@ public class SimpleIcon implements IIcon {
             Item item = ForgeRegistries.ITEMS.getValue(itemId);
             if (item != null) {
                 t.texture = buffer.readResourceLocation();
-                t.text = buffer.readTextComponent();
+                if (buffer.readBoolean()) {
+                    t.text = IconFunctions.read(buffer);
+                }
             }
 
             return t;
@@ -110,7 +118,11 @@ public class SimpleIcon implements IIcon {
 
             // Icon
             buffer.writeResourceLocation(icon.texture);
-            buffer.writeTextComponent(icon.text);
+            boolean hasText = !(icon.text instanceof EmptyTextFunction);
+            buffer.writeBoolean(hasText);
+            if (hasText) {
+                IconFunctions.write(buffer, icon.text);
+            }
         }
 
         @Override

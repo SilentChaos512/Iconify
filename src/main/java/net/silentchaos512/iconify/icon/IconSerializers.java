@@ -8,10 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
-import net.silentchaos512.iconify.icon.type.ModIdIcon;
-import net.silentchaos512.iconify.icon.type.SimpleIcon;
-import net.silentchaos512.iconify.icon.type.TagIcon;
-import net.silentchaos512.iconify.icon.type.ToolTypeIcon;
+import net.silentchaos512.iconify.icon.type.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +16,12 @@ import java.util.Map;
 public final class IconSerializers {
     private static final Map<ResourceLocation, IIconSerializer<?>> REGISTRY = new HashMap<>();
 
-    public static final IIconSerializer<SimpleIcon> SIMPLE = register(new SimpleIcon.Serializer<>(Iconify.getId("simple"), SimpleIcon::new));
-    public static final IIconSerializer<ModIdIcon> MOD_ID = register(new ModIdIcon.Serializer(Iconify.getId("mod_id"), ModIdIcon::new));
-    public static final IIconSerializer<TagIcon> TAG = register(new TagIcon.Serializer(Iconify.getId("tag"), TagIcon::new));
-    public static final IIconSerializer<ToolTypeIcon> TOOL_TYPE = register(new ToolTypeIcon.Serializer(Iconify.getId("tool_type"), ToolTypeIcon::new));
+    public static final IIconSerializer<?> SIMPLE = register(new SimpleIcon.Serializer<>(Iconify.getId("simple"), SimpleIcon::new));
+    public static final IIconSerializer<?> FOOD = register(new FoodIcon.Serializer(Iconify.getId("food"), FoodIcon::new));
+    public static final IIconSerializer<?> GEAR_TYPE = register(new GearTypeIcon.Serializer(Iconify.getId("gear_type"), GearTypeIcon::new));
+    public static final IIconSerializer<?> MOD_ID = register(new ModIdIcon.Serializer(Iconify.getId("mod_id"), ModIdIcon::new));
+    public static final IIconSerializer<?> TAG = register(new TagIcon.Serializer(Iconify.getId("tag"), TagIcon::new));
+    public static final IIconSerializer<?> TOOL_TYPE = register(new ToolTypeIcon.Serializer(Iconify.getId("tool_type"), ToolTypeIcon::new));
 
     private IconSerializers() {}
 

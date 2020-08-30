@@ -1,0 +1,12 @@
+{
+  "type": "iconify:gear_type",
+  "gear_type": "armor",
+  "group": "iconify:silentgear",
+  "icon": {
+    "texture": "minecraft:item/diamond_helmet",
+    "text": {
+      "function": "iconify:gear_stat",
+      "stat": "silentgear:armor_toughness"
+    }
+  }
+}

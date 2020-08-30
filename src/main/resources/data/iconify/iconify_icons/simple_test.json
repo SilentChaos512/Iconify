@@ -4,7 +4,8 @@
   "icon": {
     "texture": "minecraft:item/apple",
     "text": {
-      "text": "Test"
+      "function": "simple",
+      "text": "Testing"
     }
   }
 }
