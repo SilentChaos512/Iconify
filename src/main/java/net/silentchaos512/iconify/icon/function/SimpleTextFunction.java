@@ -36,7 +36,7 @@ public class SimpleTextFunction implements ITextFunction {
         @Override
         public SimpleTextFunction deserialize(JsonObject json) {
             JsonElement textJson = json.has("value") ? json.get("value") : json;
-            return new SimpleTextFunction(ITextComponent.Serializer.func_240641_a_(textJson));
+            return new SimpleTextFunction(ITextComponent.Serializer.getComponentFromJson(textJson));
         }
 
         @Override

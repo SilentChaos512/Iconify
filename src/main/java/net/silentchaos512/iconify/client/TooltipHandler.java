@@ -56,9 +56,9 @@ public final class TooltipHandler {
         event.getMatrixStack().push();
         float scale = 0.7f;
         event.getMatrixStack().scale(scale, scale, scale);
-        event.getFontRenderer().func_238407_a_(event.getMatrixStack(), text, x / scale, y / scale + 4, -1);
+        event.getFontRenderer().func_238407_a_(event.getMatrixStack(), text.func_241878_f(), x / scale, y / scale + 4, -1);
         event.getMatrixStack().pop();
-        int length = event.getFontRenderer().func_238414_a_(text);
+        int length = event.getFontRenderer().getStringPropertyWidth(text);
         return Math.round(length * scale);
     }
 
