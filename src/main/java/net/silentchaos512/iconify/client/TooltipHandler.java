@@ -80,8 +80,8 @@ public final class TooltipHandler {
         bufferbuilder.pos(x, y + height * scale, 0.0)
                 .tex(0, 1)
                 .color(255, 255, 255, 255).endVertex();
-        bufferbuilder.pos(x + width * scale, y + height * scale, 0.0).
-                tex(1, 1)
+        bufferbuilder.pos(x + width * scale, y + height * scale, 0.0)
+                .tex(1, 1)
                 .color(255, 255, 255, 255).endVertex();
         bufferbuilder.pos(x + width * scale, y, 0.0)
                 .tex(1, 0)
