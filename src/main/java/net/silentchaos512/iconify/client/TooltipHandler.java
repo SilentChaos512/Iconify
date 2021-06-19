@@ -30,7 +30,8 @@ public final class TooltipHandler {
             return;
         }
 
-        int x = event.getX() - 2;
+        final int startX = event.getX() - 2;
+        int x = startX;
         int y = event.getY() - 14;
 
         for (IIcon icon : IconManager.getValues()) {
@@ -45,7 +46,7 @@ public final class TooltipHandler {
                 }
 
                 if (x > event.getX() + event.getWidth()) {
-                    x = event.getX();
+                    x = startX;
                     y -= 11;
                 }
             }

@@ -15,8 +15,8 @@ public class FoodTextFunction implements ITextFunction {
         if (stack.isFood() && stack.getItem().getFood() != null) {
             Food food = stack.getItem().getFood();
             int healing = food.getHealing();
-            float saturation = food.getSaturation();
-            return Optional.of(new StringTextComponent(String.format("%d/%.1f", healing, saturation)));
+            int saturation = Math.round(100 * food.getSaturation());
+            return Optional.of(new StringTextComponent(String.format("%d/%d%%", healing, saturation)));
         }
         return Optional.empty();
     }

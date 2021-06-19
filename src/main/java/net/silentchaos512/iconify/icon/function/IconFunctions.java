@@ -17,6 +17,7 @@ import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class IconFunctions {
@@ -27,6 +28,12 @@ public class IconFunctions {
     public static final ITextFunctionSerializer<?> FOOD = register(basicSerializer("food", FoodTextFunction::new));
     public static final ITextFunctionSerializer<?> GEAR_STAT = register(new GearStatFunction.Serializer());
     public static final ITextFunctionSerializer<?> SIMPLE = register(new SimpleTextFunction.Serializer());
+    public static final ITextFunctionSerializer<?> DURABILITY = register(new ItemPropertyTextFunction.Serializer(Iconify.getId("durability"), stack -> {
+        if (stack.getMaxDamage() > 0) {
+            return Optional.of(new StringTextComponent(String.valueOf(stack.getMaxDamage())));
+        }
+        return Optional.empty();
+    }));
 
     public static <S extends ITextFunctionSerializer<T>, T extends ITextFunction> S register(S serializer) {
         ResourceLocation id = serializer.getName();

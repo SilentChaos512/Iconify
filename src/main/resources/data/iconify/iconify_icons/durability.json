@@ -1,0 +1,11 @@
+{
+  "type": "iconify:simple",
+  "group": "iconify:equipment",
+  "visible_when_text_empty": false,
+  "icon": {
+    "texture": "minecraft:item/diamond",
+    "text": {
+      "function": "iconify:durability"
+    }
+  }
+}
