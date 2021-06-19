@@ -1,4 +1,5 @@
 modLoader="javafml"
+loaderVersion="[34,)"
 license="MIT"
 issueTrackerURL="http://my.issue.tracker/"
 [[mods]]
@@ -13,7 +14,7 @@ issueTrackerURL="http://my.issue.tracker/"
 [[dependencies.iconify]]
     modId="forge"
     mandatory=true
-    versionRange="[32,)"
+    versionRange="[34,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.iconify]]
@@ -25,6 +26,6 @@ issueTrackerURL="http://my.issue.tracker/"
 [[dependencies.iconify]]
     modId="silentgear"
     mandatory=false
-    versionRange="[2.3,)"
+    versionRange="[2.6,)"
     ordering="NONE"
     side="BOTH"
