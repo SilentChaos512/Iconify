@@ -24,6 +24,7 @@ public class SimpleIcon implements IIcon {
     String group = "";
     ResourceLocation texture;
     ITextFunction text = EmptyTextFunction.INSTANCE;
+    boolean visibleWhenTextEmpty = true;
 
     public SimpleIcon(ResourceLocation iconId) {
         this.iconId = iconId;
@@ -59,6 +60,11 @@ public class SimpleIcon implements IIcon {
         return true;
     }
 
+    @Override
+    public boolean isVisibleWhenTextEmpty() {
+        return visibleWhenTextEmpty;
+    }
+
     public static class Serializer<T extends SimpleIcon> implements IIconSerializer<T> {
         private final ResourceLocation name;
         private final Function<ResourceLocation, T> constructor;
@@ -72,6 +78,7 @@ public class SimpleIcon implements IIcon {
         public T deserialize(ResourceLocation id, JsonObject json) {
             T t = constructor.apply(id);
             t.group = JSONUtils.getString(json, "group", "");
+            t.visibleWhenTextEmpty = JSONUtils.getBoolean(json, "visible_when_text_empty", true);
 
             // Icon
             if (json.has("icon")) {
@@ -98,6 +105,7 @@ public class SimpleIcon implements IIcon {
         public T read(ResourceLocation id, PacketBuffer buffer) {
             T t = constructor.apply(id);
             t.group = buffer.readString();
+            t.visibleWhenTextEmpty = buffer.readBoolean();
 
             // Icon
             ResourceLocation itemId = buffer.readResourceLocation();
@@ -115,6 +123,7 @@ public class SimpleIcon implements IIcon {
         @Override
         public void write(PacketBuffer buffer, T icon) {
             buffer.writeString(icon.group);
+            buffer.writeBoolean(icon.visibleWhenTextEmpty);
 
             // Icon
             buffer.writeResourceLocation(icon.texture);

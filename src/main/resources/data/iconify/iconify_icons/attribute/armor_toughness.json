@@ -1,0 +1,19 @@
+{
+  "type": "iconify:equipment_type",
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "group": "iconify:equipment",
+  "visible_when_text_empty": false,
+  "icon": {
+    "texture": "minecraft:item/diamond_helmet",
+    "text": {
+      "function": "iconify:attribute",
+      "slots": "armor",
+      "attribute": "generic.armor_toughness"
+    }
+  }
+}

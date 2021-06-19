@@ -18,4 +18,6 @@ public interface IIcon {
     Optional<ITextComponent> getIconText(ItemStack stack);
 
     boolean test(ItemStack stack);
+
+    boolean isVisibleWhenTextEmpty();
 }

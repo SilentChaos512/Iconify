@@ -34,14 +34,14 @@ public final class TooltipHandler {
         int y = event.getY() - 14;
 
         for (IIcon icon : IconManager.getValues()) {
-            if (icon.test(event.getStack())) {
+            if (isIconVisible(icon, event.getStack())) {
                 renderTexture(icon.getIconTexture(), 0.7f, x, y, 16, 16);
                 x += 11;
 
                 // render text
                 Optional<ITextComponent> text = icon.getIconText(event.getStack());
                 if (text.isPresent()) {
-                    x += renderText(event, text.get(), x, y);
+                    x += renderText(event, text.get(), x + 2, y);
                 }
 
                 if (x > event.getX() + event.getWidth()) {
@@ -52,6 +52,10 @@ public final class TooltipHandler {
         }
     }
 
+    private static boolean isIconVisible(IIcon icon, ItemStack stack) {
+        return icon.test(stack) && (icon.isVisibleWhenTextEmpty() || icon.getIconText(stack).isPresent());
+    }
+
     private static int renderText(RenderTooltipEvent event, ITextComponent text, int x, int y) {
         event.getMatrixStack().push();
         float scale = 0.7f;
@@ -59,7 +63,8 @@ public final class TooltipHandler {
         event.getFontRenderer().func_238407_a_(event.getMatrixStack(), text.func_241878_f(), x / scale, y / scale + 4, -1);
         event.getMatrixStack().pop();
         int length = event.getFontRenderer().getStringPropertyWidth(text);
-        return Math.round(length * scale);
+        int spacing = length > 0 ? 4 : 0;
+        return Math.round(length * scale) + spacing;
     }
 
     public static void renderTexture(ResourceLocation texture, float scale, int x, int y, int width, int height) {

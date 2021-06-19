@@ -1,0 +1,18 @@
+{
+  "type": "iconify:equipment_type",
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "group": "iconify:equipment",
+  "icon": {
+    "texture": "minecraft:item/iron_helmet",
+    "text": {
+      "function": "iconify:attribute",
+      "slots": "armor",
+      "attribute": "generic.armor"
+    }
+  }
+}

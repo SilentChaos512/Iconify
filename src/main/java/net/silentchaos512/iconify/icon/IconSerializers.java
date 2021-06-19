@@ -17,6 +17,7 @@ public final class IconSerializers {
     private static final Map<ResourceLocation, IIconSerializer<?>> REGISTRY = new HashMap<>();
 
     public static final IIconSerializer<?> SIMPLE = register(new SimpleIcon.Serializer<>(Iconify.getId("simple"), SimpleIcon::new));
+    public static final IIconSerializer<?> EQUIPMENT_TYPE = register(new EquipmentIcon.Serializer(Iconify.getId("equipment_type"), EquipmentIcon::new));
     public static final IIconSerializer<?> FOOD = register(new FoodIcon.Serializer(Iconify.getId("food"), FoodIcon::new));
     public static final IIconSerializer<?> GEAR_TYPE = register(new GearTypeIcon.Serializer(Iconify.getId("gear_type"), GearTypeIcon::new));
     public static final IIconSerializer<?> MOD_ID = register(new ModIdIcon.Serializer(Iconify.getId("mod_id"), ModIdIcon::new));

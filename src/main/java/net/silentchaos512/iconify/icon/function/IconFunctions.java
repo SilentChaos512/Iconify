@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 public class IconFunctions {
     private static final Map<ResourceLocation, ITextFunctionSerializer<?>> REGISTRY = new HashMap<>();
 
+    public static final ITextFunctionSerializer<?> ATTRIBUTE = register(new AttributeTextFunction.Serializer());
     public static final ITextFunctionSerializer<?> EMPTY = register(basicSerializer("empty", EmptyTextFunction::new));
     public static final ITextFunctionSerializer<?> FOOD = register(basicSerializer("food", FoodTextFunction::new));
     public static final ITextFunctionSerializer<?> GEAR_STAT = register(new GearStatFunction.Serializer());
