@@ -1,11 +1,12 @@
 {
   "type": "iconify:simple",
   "group": "iconify:test",
+  "visible_when_text_empty": false,
   "icon": {
     "texture": "minecraft:item/apple",
     "text": {
       "function": "simple",
-      "text": "Testing"
+      "text": ""
     }
   }
 }

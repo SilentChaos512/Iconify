@@ -1,15 +1,13 @@
 {
   "type": "iconify:gear_type",
-  "gear_type": [
-    "melee_weapon",
-    "axe"
-  ],
+  "gear_type": "all",
   "group": "iconify:silentgear",
+  "visible_when_text_empty": false,
   "icon": {
-    "texture": "minecraft:item/iron_sword",
+    "texture": "minecraft:item/emerald",
     "text": {
       "function": "iconify:gear_stat",
-      "stat": "silentgear:melee_damage"
+      "stat": "silentgear:rarity"
     }
   }
 }

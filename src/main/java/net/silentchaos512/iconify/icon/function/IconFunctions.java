@@ -3,13 +3,15 @@ package net.silentchaos512.iconify.icon.function;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.item.Food;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.ToolType;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
@@ -28,12 +30,9 @@ public class IconFunctions {
     public static final ITextFunctionSerializer<?> FOOD = register(basicSerializer("food", FoodTextFunction::new));
     public static final ITextFunctionSerializer<?> GEAR_STAT = register(new GearStatFunction.Serializer());
     public static final ITextFunctionSerializer<?> SIMPLE = register(new SimpleTextFunction.Serializer());
-    public static final ITextFunctionSerializer<?> DURABILITY = register(new ItemPropertyTextFunction.Serializer(Iconify.getId("durability"), stack -> {
-        if (stack.getMaxDamage() > 0) {
-            return Optional.of(new StringTextComponent(String.valueOf(stack.getMaxDamage())));
-        }
-        return Optional.empty();
-    }));
+    public static final ITextFunctionSerializer<?> DURABILITY = register(new ItemPropertyTextFunction.Serializer(Iconify.getId("durability"), IconFunctions::getMaxDamage));
+    public static final ITextFunctionSerializer<?> HARVEST_LEVEL = register(new ItemPropertyTextFunction.Serializer(Iconify.getId("harvest_level"), IconFunctions::getHarvestLevel));
+    public static final ITextFunctionSerializer<?> HARVEST_SPEED = register(new ItemPropertyTextFunction.Serializer(Iconify.getId("harvest_speed"), IconFunctions::getHarvestSpeed));
 
     public static <S extends ITextFunctionSerializer<T>, T extends ITextFunction> S register(S serializer) {
         ResourceLocation id = serializer.getName();
@@ -83,11 +82,53 @@ public class IconFunctions {
     }
 
     @Nullable
-    private static ITextComponent getFoodText(ItemStack stack) {
-        Food food = stack.getItem().getFood();
-        if (food != null) {
-            return new StringTextComponent(String.valueOf(food.getHealing()));
+    private static BlockState getBlockForTool(ItemStack stack) {
+        if (stack.getToolTypes().contains(ToolType.PICKAXE)) {
+            return Blocks.STONE.getDefaultState();
+        }
+        if (stack.getToolTypes().contains(ToolType.SHOVEL)) {
+            return Blocks.DIRT.getDefaultState();
+        }
+        if (stack.getToolTypes().contains(ToolType.AXE)) {
+            return Blocks.OAK_WOOD.getDefaultState();
+        }
+        if (stack.getToolTypes().contains(ToolType.HOE)) {
+            return Blocks.PUMPKIN.getDefaultState();
         }
         return null;
+    }
+
+    private static Optional<ITextComponent> getMaxDamage(ItemStack stack) {
+        if (stack.getMaxDamage() > 0) {
+            return Optional.of(new StringTextComponent(String.valueOf(stack.getMaxDamage())));
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<ITextComponent> getHarvestLevel(ItemStack stack) {
+        int max = -1;
+
+        for (ToolType toolType : stack.getToolTypes()) {
+            max = Math.max(max, stack.getHarvestLevel(toolType, null, getBlockForTool(stack)));
+        }
+
+        if (max > 0) {
+            return Optional.of(new StringTextComponent(String.valueOf(max)));
+        }
+
+        return Optional.empty();
+    }
+
+    private static Optional<ITextComponent> getHarvestSpeed(ItemStack stack) {
+        BlockState blockForTool = getBlockForTool(stack);
+
+        if (blockForTool != null) {
+            float speed = stack.getDestroySpeed(blockForTool);
+            if (speed > 1) {
+                return Optional.of(new StringTextComponent(String.format("%.1f", speed)));
+            }
+        }
+
+        return Optional.empty();
     }
 }
