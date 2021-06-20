@@ -168,7 +168,6 @@ dependencies {
 }
 
 jar {
-    appendix = "${project.mc_version}"
     manifest {
         attributes(["Specification-Title"     : project.mod_id,
                     "Specification-Vendor"    : "SilentChaos512",
@@ -204,6 +203,8 @@ curseforge {
             changelog = file(project.cf_changelog_filename)
             releaseType = project.cf_release_type
             addGameVersion(project.mc_version)
+            addGameVersion("1.16.4")
+            addGameVersion("1.16.3")
             mainArtifact(jar) {
 //                displayName = "$project.description $display_version"
                 relations {
