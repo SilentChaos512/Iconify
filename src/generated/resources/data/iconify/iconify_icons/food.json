@@ -1,0 +1,8 @@
+{
+  "type": "iconify:simple",
+  "group": "test",
+  "icon": {
+    "texture": "minecraft:item/cooked_chicken",
+    "text": {}
+  }
+}
