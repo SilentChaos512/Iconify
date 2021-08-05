@@ -49,7 +49,7 @@ public class IconFunctions {
 
     public static ITextFunction deserialize(JsonElement json) {
         if (json.isJsonObject() && json.getAsJsonObject().has("function")) {
-            String typeStr = JSONUtils.getString(json.getAsJsonObject(), "function");
+            String typeStr = JSONUtils.getAsString(json.getAsJsonObject(), "function");
             ITextFunctionSerializer<?> serializer = REGISTRY.get(Iconify.getIdWithDefaultNamespace(typeStr));
             if (serializer != null) {
                 return serializer.deserialize(json.getAsJsonObject());
@@ -86,16 +86,16 @@ public class IconFunctions {
     @Nullable
     private static BlockState getBlockForTool(ItemStack stack) {
         if (stack.getToolTypes().contains(ToolType.PICKAXE)) {
-            return Blocks.STONE.getDefaultState();
+            return Blocks.STONE.defaultBlockState();
         }
         if (stack.getToolTypes().contains(ToolType.SHOVEL)) {
-            return Blocks.DIRT.getDefaultState();
+            return Blocks.DIRT.defaultBlockState();
         }
         if (stack.getToolTypes().contains(ToolType.AXE)) {
-            return Blocks.OAK_WOOD.getDefaultState();
+            return Blocks.OAK_WOOD.defaultBlockState();
         }
         if (stack.getToolTypes().contains(ToolType.HOE)) {
-            return Blocks.PUMPKIN.getDefaultState();
+            return Blocks.PUMPKIN.defaultBlockState();
         }
         return null;
     }

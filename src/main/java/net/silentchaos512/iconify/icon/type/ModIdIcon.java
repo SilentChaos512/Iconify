@@ -36,21 +36,21 @@ public class ModIdIcon extends SimpleIcon {
         @Override
         public ModIdIcon deserialize(ResourceLocation id, JsonObject json) {
             ModIdIcon icon = super.deserialize(id, json);
-            icon.modId = JSONUtils.getString(json, "mod_id");
+            icon.modId = JSONUtils.getAsString(json, "mod_id");
             return icon;
         }
 
         @Override
         public ModIdIcon read(ResourceLocation id, PacketBuffer buffer) {
             ModIdIcon icon = super.read(id, buffer);
-            icon.modId = buffer.readString();
+            icon.modId = buffer.readUtf();
             return icon;
         }
 
         @Override
         public void write(PacketBuffer buffer, ModIdIcon icon) {
             super.write(buffer, icon);
-            buffer.writeString(icon.modId);
+            buffer.writeUtf(icon.modId);
         }
     }
 }

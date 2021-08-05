@@ -78,7 +78,7 @@ public class AttributeTextFunction implements ITextFunction {
 
         @Override
         public AttributeTextFunction deserialize(JsonObject json) {
-            String attributeName = JSONUtils.getString(json, "attribute");
+            String attributeName = JSONUtils.getAsString(json, "attribute");
             Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation(attributeName));
             if (attribute == null) {
                 throw new JsonParseException("Unknown attribute '" + attributeName + "'");
@@ -89,7 +89,7 @@ public class AttributeTextFunction implements ITextFunction {
             if (slotsJson.isJsonArray()) {
                 slots = new ArrayList<>();
                 for (JsonElement arrayElement : slotsJson.getAsJsonArray()) {
-                    slots.add(EquipmentSlotType.fromString(arrayElement.getAsString()));
+                    slots.add(EquipmentSlotType.byName(arrayElement.getAsString()));
                 }
             } else {
                 String value = slotsJson.getAsString();
@@ -123,7 +123,7 @@ public class AttributeTextFunction implements ITextFunction {
             List<EquipmentSlotType> slots = new ArrayList<>();
             int count = buffer.readByte();
             for (int i = 0; i < count; ++i) {
-                slots.add(EquipmentSlotType.fromString(buffer.readString()));
+                slots.add(EquipmentSlotType.byName(buffer.readUtf()));
             }
             return new AttributeTextFunction(slots, attribute);
         }
@@ -132,7 +132,7 @@ public class AttributeTextFunction implements ITextFunction {
         public void write(PacketBuffer buffer, AttributeTextFunction function) {
             buffer.writeResourceLocation(Objects.requireNonNull(function.attribute.getRegistryName()));
             buffer.writeByte(function.equipmentSlots.size());
-            function.equipmentSlots.forEach(slot -> buffer.writeString(slot.getName()));
+            function.equipmentSlots.forEach(slot -> buffer.writeUtf(slot.getName()));
         }
     }
 }

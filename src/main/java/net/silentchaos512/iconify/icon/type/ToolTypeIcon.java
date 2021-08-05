@@ -37,7 +37,7 @@ public class ToolTypeIcon extends SimpleIcon {
         @Override
         public ToolTypeIcon deserialize(ResourceLocation id, JsonObject json) {
             ToolTypeIcon icon = super.deserialize(id, json);
-            String str = JSONUtils.getString(json, "tool_type");
+            String str = JSONUtils.getAsString(json, "tool_type");
             if (str.isEmpty()) {
                 throw new JsonParseException("tool_type may not be empty");
             }
@@ -48,14 +48,14 @@ public class ToolTypeIcon extends SimpleIcon {
         @Override
         public ToolTypeIcon read(ResourceLocation id, PacketBuffer buffer) {
             ToolTypeIcon icon = super.read(id, buffer);
-            icon.toolType = ToolType.get(buffer.readString());
+            icon.toolType = ToolType.get(buffer.readUtf());
             return icon;
         }
 
         @Override
         public void write(PacketBuffer buffer, ToolTypeIcon icon) {
             super.write(buffer, icon);
-            buffer.writeString(icon.toolType.getName());
+            buffer.writeUtf(icon.toolType.getName());
         }
     }
 }

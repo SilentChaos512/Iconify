@@ -21,7 +21,7 @@ public class FoodIcon extends SimpleIcon {
 
     @Override
     public boolean test(ItemStack stack) {
-        return stack.isFood();
+        return stack.isEdible();
     }
 
     public static class Serializer extends SimpleIcon.Serializer<FoodIcon> {

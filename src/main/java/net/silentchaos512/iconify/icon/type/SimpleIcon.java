@@ -77,13 +77,13 @@ public class SimpleIcon implements IIcon {
         @Override
         public T deserialize(ResourceLocation id, JsonObject json) {
             T t = constructor.apply(id);
-            t.group = JSONUtils.getString(json, "group", "");
-            t.visibleWhenTextEmpty = JSONUtils.getBoolean(json, "visible_when_text_empty", true);
+            t.group = JSONUtils.getAsString(json, "group", "");
+            t.visibleWhenTextEmpty = JSONUtils.getAsBoolean(json, "visible_when_text_empty", true);
 
             // Icon
             if (json.has("icon")) {
                 JsonObject iconObj = json.getAsJsonObject("icon");
-                String texturePath = JSONUtils.getString(iconObj, "texture");
+                String texturePath = JSONUtils.getAsString(iconObj, "texture");
                 t.texture = parseTexturePath(texturePath);
 
                 JsonElement textJson = iconObj.get("text");
@@ -104,7 +104,7 @@ public class SimpleIcon implements IIcon {
         @Override
         public T read(ResourceLocation id, PacketBuffer buffer) {
             T t = constructor.apply(id);
-            t.group = buffer.readString();
+            t.group = buffer.readUtf();
             t.visibleWhenTextEmpty = buffer.readBoolean();
 
             // Icon
@@ -122,7 +122,7 @@ public class SimpleIcon implements IIcon {
 
         @Override
         public void write(PacketBuffer buffer, T icon) {
-            buffer.writeString(icon.group);
+            buffer.writeUtf(icon.group);
             buffer.writeBoolean(icon.visibleWhenTextEmpty);
 
             // Icon

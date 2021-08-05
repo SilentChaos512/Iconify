@@ -28,7 +28,7 @@ public class TagIcon extends SimpleIcon {
 
     @Override
     public boolean test(ItemStack stack) {
-        return stack.getItem().isIn(this.tag);
+        return stack.getItem().is(this.tag);
     }
 
     public static class Serializer extends SimpleIcon.Serializer<TagIcon> {
@@ -39,25 +39,25 @@ public class TagIcon extends SimpleIcon {
         @Override
         public TagIcon deserialize(ResourceLocation id, JsonObject json) {
             TagIcon icon = super.deserialize(id, json);
-            String str = JSONUtils.getString(json, "tag");
+            String str = JSONUtils.getAsString(json, "tag");
             if (str.isEmpty()) {
                 throw new JsonParseException("tag may not be empty");
             }
-            icon.tag = ItemTags.makeWrapperTag(str);
+            icon.tag = ItemTags.bind(str);
             return icon;
         }
 
         @Override
         public TagIcon read(ResourceLocation id, PacketBuffer buffer) {
             TagIcon icon = super.read(id, buffer);
-            icon.tag = ItemTags.makeWrapperTag(buffer.readString());
+            icon.tag = ItemTags.bind(buffer.readUtf());
             return icon;
         }
 
         @Override
         public void write(PacketBuffer buffer, TagIcon icon) {
             super.write(buffer, icon);
-            buffer.writeString(icon.tag.getName().toString());
+            buffer.writeUtf(icon.tag.getName().toString());
         }
     }
 }

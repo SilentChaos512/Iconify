@@ -2,10 +2,10 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/iconify",
     "changelog": "https://github.com/SilentChaos512/Iconify/blob/1.16.x/CHANGELOG.md",
     "promos": {
-        "1.16.5-latest": "0.1.0",
-        "1.16.5-recommended": "0.1.0"
+        "1.16.5-latest": "0.1.1",
+        "1.16.5-recommended": "0.1.1"
     },
     "1.16.5": {
-        "0.1.0": "See changelog on GitHub"
+        "0.1.1": "See changelog on GitHub"
     }
 }

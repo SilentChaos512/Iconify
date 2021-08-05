@@ -36,7 +36,7 @@ public class EquipmentIcon extends SimpleIcon {
 
     private static EquipmentSlotType getEquipmentSlot(ItemStack stack) {
         if (stack.getItem() instanceof ArmorItem) {
-            return ((ArmorItem) stack.getItem()).getEquipmentSlot();
+            return ((ArmorItem) stack.getItem()).getSlot();
         }
         return stack.getEquipmentSlot();
     }
@@ -70,7 +70,7 @@ public class EquipmentIcon extends SimpleIcon {
             EquipmentIcon icon = super.read(id, buffer);
             int slotCount = buffer.readByte();
             for (int i = 0; i < slotCount; ++i) {
-                icon.slots.add(buffer.readEnumValue(EquipmentSlotType.class));
+                icon.slots.add(buffer.readEnum(EquipmentSlotType.class));
             }
             return icon;
         }
@@ -79,7 +79,7 @@ public class EquipmentIcon extends SimpleIcon {
         public void write(PacketBuffer buffer, EquipmentIcon icon) {
             super.write(buffer, icon);
             buffer.writeByte(icon.slots.size());
-            icon.slots.forEach(buffer::writeEnumValue);
+            icon.slots.forEach(buffer::writeEnum);
         }
     }
 }

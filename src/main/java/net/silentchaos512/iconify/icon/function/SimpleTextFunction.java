@@ -36,7 +36,7 @@ public class SimpleTextFunction implements ITextFunction {
         @Override
         public SimpleTextFunction deserialize(JsonObject json) {
             JsonElement textJson = json.has("value") ? json.get("value") : json;
-            return new SimpleTextFunction(ITextComponent.Serializer.getComponentFromJson(textJson));
+            return new SimpleTextFunction(ITextComponent.Serializer.fromJson(textJson));
         }
 
         @Override
@@ -48,12 +48,12 @@ public class SimpleTextFunction implements ITextFunction {
 
         @Override
         public SimpleTextFunction read(PacketBuffer buffer) {
-            return new SimpleTextFunction(buffer.readTextComponent());
+            return new SimpleTextFunction(buffer.readComponent());
         }
 
         @Override
         public void write(PacketBuffer buffer, SimpleTextFunction function) {
-            buffer.writeTextComponent(function.text);
+            buffer.writeComponent(function.text);
         }
     }
 }

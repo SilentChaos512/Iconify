@@ -58,12 +58,12 @@ public final class TooltipHandler {
     }
 
     private static int renderText(RenderTooltipEvent event, ITextComponent text, int x, int y) {
-        event.getMatrixStack().push();
+        event.getMatrixStack().pushPose();
         float scale = 0.7f;
         event.getMatrixStack().scale(scale, scale, scale);
-        event.getFontRenderer().func_238407_a_(event.getMatrixStack(), text.func_241878_f(), x / scale, y / scale + 4, -1);
-        event.getMatrixStack().pop();
-        int length = event.getFontRenderer().getStringPropertyWidth(text);
+        event.getFontRenderer().drawShadow(event.getMatrixStack(), text.getVisualOrderText(), x / scale, y / scale + 4, -1);
+        event.getMatrixStack().popPose();
+        int length = event.getFontRenderer().width(text);
         int spacing = length > 0 ? 4 : 0;
         return Math.round(length * scale) + spacing;
     }
@@ -78,30 +78,30 @@ public final class TooltipHandler {
         RenderSystem.defaultAlphaFunc();
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
+        Minecraft.getInstance().getTextureManager().bind(texture);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        bufferbuilder.pos(x, y + height * scale, 0.0)
-                .tex(0, 1)
+        bufferbuilder.vertex(x, y + height * scale, 0.0)
+                .uv(0, 1)
                 .color(255, 255, 255, 255).endVertex();
-        bufferbuilder.pos(x + width * scale, y + height * scale, 0.0)
-                .tex(1, 1)
+        bufferbuilder.vertex(x + width * scale, y + height * scale, 0.0)
+                .uv(1, 1)
                 .color(255, 255, 255, 255).endVertex();
-        bufferbuilder.pos(x + width * scale, y, 0.0)
-                .tex(1, 0)
+        bufferbuilder.vertex(x + width * scale, y, 0.0)
+                .uv(1, 0)
                 .color(255, 255, 255, 255).endVertex();
-        bufferbuilder.pos(x, y, 0.0)
-                .tex(0, 0)
+        bufferbuilder.vertex(x, y, 0.0)
+                .uv(0, 0)
                 .color(255, 255, 255, 255).endVertex();
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.disableBlend();
         RenderSystem.color4f(1f, 1f, 1f, 1f);
 
         RenderSystem.disableRescaleNormal();
-        RenderHelper.disableStandardItemLighting();
+        RenderHelper.turnOff();
         RenderSystem.disableLighting();
         RenderSystem.disableDepthTest();
     }

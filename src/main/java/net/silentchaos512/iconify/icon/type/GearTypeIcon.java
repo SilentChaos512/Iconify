@@ -61,7 +61,7 @@ public class GearTypeIcon extends SimpleIcon {
             GearTypeIcon icon = super.read(id, buffer);
             int typeCount = buffer.readByte();
             for (int i = 0; i < typeCount; ++i) {
-                icon.gearTypes.add(buffer.readString());
+                icon.gearTypes.add(buffer.readUtf());
             }
             return icon;
         }
@@ -70,7 +70,7 @@ public class GearTypeIcon extends SimpleIcon {
         public void write(PacketBuffer buffer, GearTypeIcon icon) {
             super.write(buffer, icon);
             buffer.writeByte(icon.gearTypes.size());
-            icon.gearTypes.forEach(buffer::writeString);
+            icon.gearTypes.forEach(buffer::writeUtf);
         }
     }
 }

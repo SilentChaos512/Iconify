@@ -24,6 +24,12 @@ issueTrackerURL="http://my.issue.tracker/"
     ordering="NONE"
     side="BOTH"
 [[dependencies.iconify]]
+    modId="silentlib"
+    mandatory=true
+    versionRange="[4.10,5.0)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.iconify]]
     modId="silentgear"
     mandatory=false
     versionRange="[2.6,)"

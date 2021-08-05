@@ -12,10 +12,10 @@ import java.util.Optional;
 public class FoodTextFunction implements ITextFunction {
     @Override
     public Optional<ITextComponent> getText(ItemStack stack) {
-        if (stack.isFood() && stack.getItem().getFood() != null) {
-            Food food = stack.getItem().getFood();
-            int healing = food.getHealing();
-            int saturation = Math.round(100 * food.getSaturation());
+        if (stack.isEdible() && stack.getItem().getFoodProperties() != null) {
+            Food food = stack.getItem().getFoodProperties();
+            int healing = food.getNutrition();
+            int saturation = Math.round(100 * food.getSaturationModifier());
             return Optional.of(new StringTextComponent(String.format("%d/%d%%", healing, saturation)));
         }
         return Optional.empty();

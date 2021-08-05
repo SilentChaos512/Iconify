@@ -34,7 +34,7 @@ public class IconManager implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-        Collection<ResourceLocation> resources = resourceManager.getAllResourceLocations(DATA_PATH, s -> s.endsWith(".json"));
+        Collection<ResourceLocation> resources = resourceManager.listResources(DATA_PATH, s -> s.endsWith(".json"));
         if (resources.isEmpty()) return;
 
         synchronized (MAP) {
@@ -48,7 +48,7 @@ public class IconManager implements IResourceManagerReloadListener {
 
                 String packName = "ERROR";
                 try (IResource iresource = resourceManager.getResource(id)) {
-                    packName = iresource.getPackName();
+                    packName = iresource.getSourceName();
                     JsonObject json = JSONUtils.fromJson(gson, IOUtils.toString(iresource.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
                     if (json == null) {
                         Iconify.LOGGER.error(MARKER, "Could not load icon {} as it's null or empty", name);

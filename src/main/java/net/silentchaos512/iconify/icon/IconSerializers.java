@@ -36,7 +36,7 @@ public final class IconSerializers {
     }
 
     public static IIcon deserialize(ResourceLocation id, JsonObject json) {
-        String typeStr = JSONUtils.getString(json, "type");
+        String typeStr = JSONUtils.getAsString(json, "type");
         ResourceLocation type = Iconify.getIdWithDefaultNamespace(typeStr);
         Iconify.LOGGER.debug("deserialize '{}' (type {})", id, type);
 

@@ -41,7 +41,7 @@ public class GearStatFunction implements ITextFunction {
 
         @Override
         public GearStatFunction deserialize(JsonObject json) {
-            String statName = JSONUtils.getString(json, "stat");
+            String statName = JSONUtils.getAsString(json, "stat");
             ResourceLocation statId = withSgearNamespace(statName);
             return new GearStatFunction(statId);
         }

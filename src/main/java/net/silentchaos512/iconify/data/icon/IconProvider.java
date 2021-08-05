@@ -72,7 +72,7 @@ public class IconProvider implements IDataProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
+    public void run(DirectoryCache cache) throws IOException {
         Path outputFolder = this.generator.getOutputFolder();
 
         builders.clear();
@@ -81,9 +81,9 @@ public class IconProvider implements IDataProvider {
         for (IconBuilder builder : builders) {
             try {
                 String jsonStr = GSON.toJson(builder.serialize());
-                String hashStr = HASH_FUNCTION.hashUnencodedChars(jsonStr).toString();
+                String hashStr = SHA1.hashUnencodedChars(jsonStr).toString();
                 Path path = outputFolder.resolve(String.format("data/%s/iconify_icons/%s.json", builder.id.getNamespace(), builder.id.getPath()));
-                if (!Objects.equals(cache.getPreviousHash(outputFolder), hashStr) || !Files.exists(path)) {
+                if (!Objects.equals(cache.getHash(outputFolder), hashStr) || !Files.exists(path)) {
                     Files.createDirectories(path.getParent());
 
                     try (BufferedWriter writer = Files.newBufferedWriter(path)) {
@@ -91,7 +91,7 @@ public class IconProvider implements IDataProvider {
                     }
                 }
 
-                cache.recordHash(path, hashStr);
+                cache.putNew(path, hashStr);
             } catch (IOException ex) {
                 LOGGER.error("Could not save materials to {}", outputFolder, ex);
             }
