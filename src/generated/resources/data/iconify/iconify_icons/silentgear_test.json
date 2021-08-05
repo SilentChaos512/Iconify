@@ -1,6 +1,6 @@
 {
   "type": "iconify:mod_id",
-  "group": "test",
+  "group": "mod_icons",
   "icon": {
     "texture": "silentgear:item/blueprint_paper"
   },

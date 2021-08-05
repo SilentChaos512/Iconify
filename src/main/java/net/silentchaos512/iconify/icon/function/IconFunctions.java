@@ -63,7 +63,9 @@ public class IconFunctions {
     @SuppressWarnings("unchecked")
     public static <T extends ITextFunction> JsonObject serialize(T function) {
         ITextFunctionSerializer<T> serializer = (ITextFunctionSerializer<T>) function.getSerializer();
-        return serializer.serialize(function);
+        JsonObject json = serializer.serialize(function);
+        json.addProperty("function", function.getSerializer().getName().toString());
+        return json;
     }
 
     public static ITextFunction read(PacketBuffer buffer) {

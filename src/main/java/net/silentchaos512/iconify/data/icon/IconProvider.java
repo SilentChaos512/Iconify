@@ -35,7 +35,7 @@ public class IconProvider implements IDataProvider {
     }
 
     private void getIcons() {
-        simpleIcon("food")
+        builder("food", IconSerializers.FOOD)
                 .group("test")
                 .texture(new ResourceLocation("item/cooked_chicken"))
                 .text(new FoodTextFunction());
