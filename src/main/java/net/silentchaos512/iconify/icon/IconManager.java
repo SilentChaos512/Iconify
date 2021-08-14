@@ -5,11 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.IResourceManagerReloadListener;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.IIcon;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class IconManager implements IResourceManagerReloadListener {
+public class IconManager implements ResourceManagerReloadListener {
     public static final IconManager INSTANCE = new IconManager();
 
     public static final Marker MARKER = MarkerManager.getMarker("IconManager");
@@ -32,7 +32,7 @@ public class IconManager implements IResourceManagerReloadListener {
     private static final Collection<String> ERROR_LIST = new ArrayList<>();
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
         Collection<ResourceLocation> resources = resourceManager.listResources(DATA_PATH, s -> s.endsWith(".json"));
         if (resources.isEmpty()) return;
@@ -47,9 +47,9 @@ public class IconManager implements IResourceManagerReloadListener {
                 ResourceLocation name = new ResourceLocation(id.getNamespace(), path);
 
                 String packName = "ERROR";
-                try (IResource iresource = resourceManager.getResource(id)) {
+                try (Resource iresource = resourceManager.getResource(id)) {
                     packName = iresource.getSourceName();
-                    JsonObject json = JSONUtils.fromJson(gson, IOUtils.toString(iresource.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
+                    JsonObject json = GsonHelper.fromJson(gson, IOUtils.toString(iresource.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
                     if (json == null) {
                         Iconify.LOGGER.error(MARKER, "Could not load icon {} as it's null or empty", name);
                     } else if (!CraftingHelper.processConditions(json, "conditions")) {

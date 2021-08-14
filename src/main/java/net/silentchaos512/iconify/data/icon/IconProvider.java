@@ -3,9 +3,9 @@ package net.silentchaos512.iconify.data.icon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
 import net.silentchaos512.iconify.icon.IconSerializers;
 import net.silentchaos512.iconify.icon.function.FoodTextFunction;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class IconProvider implements IDataProvider {
+public class IconProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
@@ -72,7 +72,7 @@ public class IconProvider implements IDataProvider {
     }
 
     @Override
-    public void run(DirectoryCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         Path outputFolder = this.generator.getOutputFolder();
 
         builders.clear();

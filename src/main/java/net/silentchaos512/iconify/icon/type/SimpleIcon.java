@@ -2,12 +2,12 @@ package net.silentchaos512.iconify.icon.type;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
@@ -46,7 +46,7 @@ public class SimpleIcon implements IIcon {
     }
 
     @Override
-    public Optional<ITextComponent> getIconText(ItemStack stack) {
+    public Optional<Component> getIconText(ItemStack stack) {
         return text.getText(stack);
     }
 
@@ -77,13 +77,13 @@ public class SimpleIcon implements IIcon {
         @Override
         public T deserialize(ResourceLocation id, JsonObject json) {
             T t = constructor.apply(id);
-            t.group = JSONUtils.getAsString(json, "group", "");
-            t.visibleWhenTextEmpty = JSONUtils.getAsBoolean(json, "visible_when_text_empty", true);
+            t.group = GsonHelper.getAsString(json, "group", "");
+            t.visibleWhenTextEmpty = GsonHelper.getAsBoolean(json, "visible_when_text_empty", true);
 
             // Icon
             if (json.has("icon")) {
                 JsonObject iconObj = json.getAsJsonObject("icon");
-                String texturePath = JSONUtils.getAsString(iconObj, "texture");
+                String texturePath = GsonHelper.getAsString(iconObj, "texture");
                 t.texture = parseTexturePath(texturePath);
 
                 JsonElement textJson = iconObj.get("text");
@@ -102,7 +102,7 @@ public class SimpleIcon implements IIcon {
         }
 
         @Override
-        public T read(ResourceLocation id, PacketBuffer buffer) {
+        public T read(ResourceLocation id, FriendlyByteBuf buffer) {
             T t = constructor.apply(id);
             t.group = buffer.readUtf();
             t.visibleWhenTextEmpty = buffer.readBoolean();
@@ -121,7 +121,7 @@ public class SimpleIcon implements IIcon {
         }
 
         @Override
-        public void write(PacketBuffer buffer, T icon) {
+        public void write(FriendlyByteBuf buffer, T icon) {
             buffer.writeUtf(icon.group);
             buffer.writeBoolean(icon.visibleWhenTextEmpty);
 

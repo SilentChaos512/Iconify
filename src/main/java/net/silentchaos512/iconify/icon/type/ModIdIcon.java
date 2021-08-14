@@ -1,10 +1,10 @@
 package net.silentchaos512.iconify.icon.type;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
 import net.silentchaos512.iconify.icon.IconSerializers;
 import net.silentchaos512.lib.util.NameUtils;
@@ -36,19 +36,19 @@ public class ModIdIcon extends SimpleIcon {
         @Override
         public ModIdIcon deserialize(ResourceLocation id, JsonObject json) {
             ModIdIcon icon = super.deserialize(id, json);
-            icon.modId = JSONUtils.getAsString(json, "mod_id");
+            icon.modId = GsonHelper.getAsString(json, "mod_id");
             return icon;
         }
 
         @Override
-        public ModIdIcon read(ResourceLocation id, PacketBuffer buffer) {
+        public ModIdIcon read(ResourceLocation id, FriendlyByteBuf buffer) {
             ModIdIcon icon = super.read(id, buffer);
             icon.modId = buffer.readUtf();
             return icon;
         }
 
         @Override
-        public void write(PacketBuffer buffer, ModIdIcon icon) {
+        public void write(FriendlyByteBuf buffer, ModIdIcon icon) {
             super.write(buffer, icon);
             buffer.writeUtf(icon.modId);
         }

@@ -1,0 +1,8 @@
+{
+  "type": "iconify:tool_action",
+  "group": "iconify:tool_actions",
+  "icon": {
+    "texture": "minecraft:item/iron_pickaxe"
+  },
+  "tool_action": "pickaxe_dig"
+}

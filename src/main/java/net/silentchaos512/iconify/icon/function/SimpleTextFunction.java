@@ -2,9 +2,9 @@ package net.silentchaos512.iconify.icon.function;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
@@ -12,14 +12,14 @@ import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
 import java.util.Optional;
 
 public class SimpleTextFunction implements ITextFunction {
-    private final ITextComponent text;
+    private final Component text;
 
-    public SimpleTextFunction(ITextComponent text) {
+    public SimpleTextFunction(Component text) {
         this.text = text;
     }
 
     @Override
-    public Optional<ITextComponent> getText(ItemStack stack) {
+    public Optional<Component> getText(ItemStack stack) {
         return Optional.of(this.text);
     }
 
@@ -36,23 +36,23 @@ public class SimpleTextFunction implements ITextFunction {
         @Override
         public SimpleTextFunction deserialize(JsonObject json) {
             JsonElement textJson = json.has("value") ? json.get("value") : json;
-            return new SimpleTextFunction(ITextComponent.Serializer.fromJson(textJson));
+            return new SimpleTextFunction(Component.Serializer.fromJson(textJson));
         }
 
         @Override
         public JsonObject serialize(SimpleTextFunction function) {
             JsonObject json = new JsonObject();
-            json.add("value", ITextComponent.Serializer.toJsonTree(function.text));
+            json.add("value", Component.Serializer.toJsonTree(function.text));
             return json;
         }
 
         @Override
-        public SimpleTextFunction read(PacketBuffer buffer) {
+        public SimpleTextFunction read(FriendlyByteBuf buffer) {
             return new SimpleTextFunction(buffer.readComponent());
         }
 
         @Override
-        public void write(PacketBuffer buffer, SimpleTextFunction function) {
+        public void write(FriendlyByteBuf buffer, SimpleTextFunction function) {
             buffer.writeComponent(function.text);
         }
     }

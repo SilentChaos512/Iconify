@@ -1,11 +1,11 @@
 package net.silentchaos512.iconify.icon.function;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
@@ -21,7 +21,7 @@ public class GearStatFunction implements ITextFunction {
     }
 
     @Override
-    public Optional<ITextComponent> getText(ItemStack stack) {
+    public Optional<Component> getText(ItemStack stack) {
         float stat = SGearProxy.getStat(stack, this.statId);
         if (stat > 0f) {
             return Optional.of(SGearProxy.formatStat(this.statId, stat));
@@ -41,7 +41,7 @@ public class GearStatFunction implements ITextFunction {
 
         @Override
         public GearStatFunction deserialize(JsonObject json) {
-            String statName = JSONUtils.getAsString(json, "stat");
+            String statName = GsonHelper.getAsString(json, "stat");
             ResourceLocation statId = withSgearNamespace(statName);
             return new GearStatFunction(statId);
         }
@@ -54,12 +54,12 @@ public class GearStatFunction implements ITextFunction {
         }
 
         @Override
-        public GearStatFunction read(PacketBuffer buffer) {
+        public GearStatFunction read(FriendlyByteBuf buffer) {
             return new GearStatFunction(buffer.readResourceLocation());
         }
 
         @Override
-        public void write(PacketBuffer buffer, GearStatFunction function) {
+        public void write(FriendlyByteBuf buffer, GearStatFunction function) {
             buffer.writeResourceLocation(function.statId);
         }
 

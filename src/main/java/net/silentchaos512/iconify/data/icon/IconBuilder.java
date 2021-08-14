@@ -1,7 +1,7 @@
 package net.silentchaos512.iconify.data.icon;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.icon.function.IconFunctions;

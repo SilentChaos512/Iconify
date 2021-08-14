@@ -1,12 +1,12 @@
 package net.silentchaos512.iconify.api.icon;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import java.util.Optional;
 
 public interface ITextFunction {
-    Optional<ITextComponent> getText(ItemStack stack);
+    Optional<Component> getText(ItemStack stack);
 
     ITextFunctionSerializer<?> getSerializer();
 }

@@ -3,15 +3,15 @@ package net.silentchaos512.iconify.icon.function;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolActions;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
@@ -49,7 +49,7 @@ public class IconFunctions {
 
     public static ITextFunction deserialize(JsonElement json) {
         if (json.isJsonObject() && json.getAsJsonObject().has("function")) {
-            String typeStr = JSONUtils.getAsString(json.getAsJsonObject(), "function");
+            String typeStr = GsonHelper.getAsString(json.getAsJsonObject(), "function");
             ITextFunctionSerializer<?> serializer = REGISTRY.get(Iconify.getIdWithDefaultNamespace(typeStr));
             if (serializer != null) {
                 return serializer.deserialize(json.getAsJsonObject());
@@ -68,7 +68,7 @@ public class IconFunctions {
         return json;
     }
 
-    public static ITextFunction read(PacketBuffer buffer) {
+    public static ITextFunction read(FriendlyByteBuf buffer) {
         ResourceLocation serializerId = buffer.readResourceLocation();
         ITextFunctionSerializer<?> serializer = REGISTRY.get(serializerId);
         if (serializer == null) {
@@ -78,56 +78,66 @@ public class IconFunctions {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ITextFunction> void write(PacketBuffer buffer, T function) {
+    public static <T extends ITextFunction> void write(FriendlyByteBuf buffer, T function) {
         ITextFunctionSerializer<T> serializer = (ITextFunctionSerializer<T>) function.getSerializer();
         serializer.write(buffer, function);
     }
 
     @Nullable
-    private static BlockState getBlockForTool(ItemStack stack) {
-        if (stack.getToolTypes().contains(ToolType.PICKAXE)) {
-            return Blocks.STONE.defaultBlockState();
+    private static BlockState getBlockForTool(ItemStack stack, int level) {
+        if (stack.canPerformAction(ToolActions.PICKAXE_DIG)) {
+            return switch (level) {
+                case 3 -> Blocks.OBSIDIAN.defaultBlockState();
+                case 2 -> Blocks.DIAMOND_ORE.defaultBlockState();
+                case 1 -> Blocks.IRON_ORE.defaultBlockState();
+                case 0 -> Blocks.STONE.defaultBlockState();
+                default -> null;
+            };
         }
-        if (stack.getToolTypes().contains(ToolType.SHOVEL)) {
+        if (stack.canPerformAction(ToolActions.SHOVEL_DIG)) {
             return Blocks.DIRT.defaultBlockState();
         }
-        if (stack.getToolTypes().contains(ToolType.AXE)) {
+        if (stack.canPerformAction(ToolActions.AXE_DIG)) {
             return Blocks.OAK_WOOD.defaultBlockState();
         }
-        if (stack.getToolTypes().contains(ToolType.HOE)) {
+        if (stack.canPerformAction(ToolActions.HOE_DIG)) {
             return Blocks.PUMPKIN.defaultBlockState();
         }
         return null;
     }
 
-    private static Optional<ITextComponent> getMaxDamage(ItemStack stack) {
+    private static Optional<Component> getMaxDamage(ItemStack stack) {
         if (stack.getMaxDamage() > 0) {
-            return Optional.of(new StringTextComponent(String.valueOf(stack.getMaxDamage())));
+            return Optional.of(new TextComponent(String.valueOf(stack.getMaxDamage())));
         }
         return Optional.empty();
     }
 
-    private static Optional<ITextComponent> getHarvestLevel(ItemStack stack) {
+    private static Optional<Component> getHarvestLevel(ItemStack stack) {
         int max = -1;
 
-        for (ToolType toolType : stack.getToolTypes()) {
-            max = Math.max(max, stack.getHarvestLevel(toolType, null, getBlockForTool(stack)));
+        // TODO: could probably clean this up somehow...
+        for (int i = 4; i >= 0; --i) {
+            if (getBlockForTool(stack, i) != null) {
+                max = i;
+                break;
+            }
         }
 
         if (max > 0) {
-            return Optional.of(new StringTextComponent(String.valueOf(max)));
+            return Optional.of(new TextComponent(String.valueOf(max)));
         }
 
         return Optional.empty();
     }
 
-    private static Optional<ITextComponent> getHarvestSpeed(ItemStack stack) {
-        BlockState blockForTool = getBlockForTool(stack);
+    private static Optional<Component> getHarvestSpeed(ItemStack stack) {
+        BlockState blockForTool = getBlockForTool(stack, 0);
 
         if (blockForTool != null) {
             float speed = stack.getDestroySpeed(blockForTool);
             if (speed > 1) {
-                return Optional.of(new StringTextComponent(String.format("%.1f", speed)));
+                return Optional.of(new TextComponent(String.format("%.1f", speed)));
             }
         }
 

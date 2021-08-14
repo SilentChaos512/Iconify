@@ -1,9 +1,9 @@
 package net.silentchaos512.iconify.compat.gear;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.silentchaos512.gear.api.item.GearType;
 import net.silentchaos512.gear.api.stats.ItemStat;
 import net.silentchaos512.gear.api.stats.ItemStats;
@@ -21,9 +21,9 @@ public final class SGearCompat {
         throw new IllegalAccessError("Utility class");
     }
 
-    public static ITextComponent formatStat(ResourceLocation statId, float value) {
+    public static Component formatStat(ResourceLocation statId, float value) {
         ItemStat stat = ItemStats.REGISTRY.get().getValue(statId);
-        if (stat == null) return new StringTextComponent("UNKNOWN STAT");
+        if (stat == null) return new TextComponent("UNKNOWN STAT");
 
         StatInstance instance = StatInstance.of(value);
         return instance.getFormattedText(stat, stat.isDisplayAsInt() ? 0 : 1, false);

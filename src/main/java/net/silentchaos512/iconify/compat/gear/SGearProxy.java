@@ -1,9 +1,9 @@
 package net.silentchaos512.iconify.compat.gear;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.fml.ModList;
 
 public final class SGearProxy {
@@ -21,9 +21,9 @@ public final class SGearProxy {
         return modLoaded;
     }
 
-    public static ITextComponent formatStat(ResourceLocation statId, float value) {
+    public static Component formatStat(ResourceLocation statId, float value) {
         if (modLoaded) return SGearCompat.formatStat(statId, value);
-        return new StringTextComponent("");
+        return new TextComponent("");
     }
 
     public static float getStat(ItemStack stack, ResourceLocation statId) {

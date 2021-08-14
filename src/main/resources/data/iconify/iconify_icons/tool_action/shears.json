@@ -1,6 +1,6 @@
 {
   "type": "iconify:tag",
-  "group": "iconify:tool_types",
+  "group": "iconify:tool_actions",
   "icon": {
     "texture": "minecraft:item/shears"
   },

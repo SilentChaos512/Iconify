@@ -3,7 +3,7 @@ package net.silentchaos512.iconify.data;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.data.icon.IconProvider;
 

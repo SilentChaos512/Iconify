@@ -6,15 +6,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
@@ -25,28 +25,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AttributeTextFunction implements ITextFunction {
-    private static final List<EquipmentSlotType> ARMOR_SLOTS = ImmutableList.of(
-            EquipmentSlotType.HEAD,
-            EquipmentSlotType.CHEST,
-            EquipmentSlotType.LEGS,
-            EquipmentSlotType.FEET
+    private static final List<EquipmentSlot> ARMOR_SLOTS = ImmutableList.of(
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
     );
-    private static final List<EquipmentSlotType> HAND_SLOTS = ImmutableList.of(
-            EquipmentSlotType.MAINHAND,
-            EquipmentSlotType.OFFHAND
+    private static final List<EquipmentSlot> HAND_SLOTS = ImmutableList.of(
+            EquipmentSlot.MAINHAND,
+            EquipmentSlot.OFFHAND
     );
 
-    private final List<EquipmentSlotType> equipmentSlots = new ArrayList<>();
+    private final List<EquipmentSlot> equipmentSlots = new ArrayList<>();
     private final Attribute attribute;
 
-    public AttributeTextFunction(Collection<EquipmentSlotType> equipmentSlots, Attribute attribute) {
+    public AttributeTextFunction(Collection<EquipmentSlot> equipmentSlots, Attribute attribute) {
         this.equipmentSlots.addAll(equipmentSlots);
         this.attribute = attribute;
     }
 
     @Override
-    public Optional<ITextComponent> getText(ItemStack stack) {
-        for (EquipmentSlotType slot : this.equipmentSlots) {
+    public Optional<Component> getText(ItemStack stack) {
+        for (EquipmentSlot slot : this.equipmentSlots) {
             Multimap<Attribute, AttributeModifier> map = stack.getAttributeModifiers(slot);
             Collection<AttributeModifier> mods = map.get(this.attribute);
 
@@ -59,7 +59,7 @@ public class AttributeTextFunction implements ITextFunction {
                         .collect(Collectors.joining(", "));
 
                 if (!str.isEmpty()) {
-                    return Optional.of(new StringTextComponent(str));
+                    return Optional.of(new TextComponent(str));
                 }
             }
         }
@@ -78,18 +78,18 @@ public class AttributeTextFunction implements ITextFunction {
 
         @Override
         public AttributeTextFunction deserialize(JsonObject json) {
-            String attributeName = JSONUtils.getAsString(json, "attribute");
+            String attributeName = GsonHelper.getAsString(json, "attribute");
             Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation(attributeName));
             if (attribute == null) {
                 throw new JsonParseException("Unknown attribute '" + attributeName + "'");
             }
 
             JsonElement slotsJson = json.get("slots");
-            List<EquipmentSlotType> slots;
+            List<EquipmentSlot> slots;
             if (slotsJson.isJsonArray()) {
                 slots = new ArrayList<>();
                 for (JsonElement arrayElement : slotsJson.getAsJsonArray()) {
-                    slots.add(EquipmentSlotType.byName(arrayElement.getAsString()));
+                    slots.add(EquipmentSlot.byName(arrayElement.getAsString()));
                 }
             } else {
                 String value = slotsJson.getAsString();
@@ -117,19 +117,19 @@ public class AttributeTextFunction implements ITextFunction {
         }
 
         @Override
-        public AttributeTextFunction read(PacketBuffer buffer) {
+        public AttributeTextFunction read(FriendlyByteBuf buffer) {
             ResourceLocation attributeId = buffer.readResourceLocation();
             Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(attributeId);
-            List<EquipmentSlotType> slots = new ArrayList<>();
+            List<EquipmentSlot> slots = new ArrayList<>();
             int count = buffer.readByte();
             for (int i = 0; i < count; ++i) {
-                slots.add(EquipmentSlotType.byName(buffer.readUtf()));
+                slots.add(EquipmentSlot.byName(buffer.readUtf()));
             }
             return new AttributeTextFunction(slots, attribute);
         }
 
         @Override
-        public void write(PacketBuffer buffer, AttributeTextFunction function) {
+        public void write(FriendlyByteBuf buffer, AttributeTextFunction function) {
             buffer.writeResourceLocation(Objects.requireNonNull(function.attribute.getRegistryName()));
             buffer.writeByte(function.equipmentSlots.size());
             function.equipmentSlots.forEach(slot -> buffer.writeUtf(slot.getName()));

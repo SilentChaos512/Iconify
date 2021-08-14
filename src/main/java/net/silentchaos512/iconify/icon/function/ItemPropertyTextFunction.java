@@ -1,10 +1,10 @@
 package net.silentchaos512.iconify.icon.function;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
 
@@ -13,15 +13,15 @@ import java.util.function.Function;
 
 public class ItemPropertyTextFunction implements ITextFunction {
     private final ITextFunctionSerializer<?> serializer;
-    private final Function<ItemStack, Optional<ITextComponent>> textFunction;
+    private final Function<ItemStack, Optional<Component>> textFunction;
 
-    public ItemPropertyTextFunction(ITextFunctionSerializer<?> serializer, Function<ItemStack, Optional<ITextComponent>> textFunction) {
+    public ItemPropertyTextFunction(ITextFunctionSerializer<?> serializer, Function<ItemStack, Optional<Component>> textFunction) {
         this.serializer = serializer;
         this.textFunction = textFunction;
     }
 
     @Override
-    public Optional<ITextComponent> getText(ItemStack stack) {
+    public Optional<Component> getText(ItemStack stack) {
         return textFunction.apply(stack);
     }
 
@@ -31,9 +31,9 @@ public class ItemPropertyTextFunction implements ITextFunction {
     }
 
     public static class Serializer extends AbstractTextFunctionSerializer<ItemPropertyTextFunction> {
-        private final Function<ItemStack, Optional<ITextComponent>> textFunction;
+        private final Function<ItemStack, Optional<Component>> textFunction;
 
-        public Serializer(ResourceLocation name, Function<ItemStack, Optional<ITextComponent>> textFunction) {
+        public Serializer(ResourceLocation name, Function<ItemStack, Optional<Component>> textFunction) {
             super(name);
             this.textFunction = textFunction;
         }
@@ -49,12 +49,12 @@ public class ItemPropertyTextFunction implements ITextFunction {
         }
 
         @Override
-        public ItemPropertyTextFunction read(PacketBuffer buffer) {
+        public ItemPropertyTextFunction read(FriendlyByteBuf buffer) {
             return new ItemPropertyTextFunction(this, textFunction);
         }
 
         @Override
-        public void write(PacketBuffer buffer, ItemPropertyTextFunction function) {
+        public void write(FriendlyByteBuf buffer, ItemPropertyTextFunction function) {
         }
     }
 }

@@ -2,9 +2,9 @@ package net.silentchaos512.iconify.icon;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
@@ -22,7 +22,7 @@ public final class IconSerializers {
     public static final IIconSerializer<?> GEAR_TYPE = register(new GearTypeIcon.Serializer(Iconify.getId("gear_type"), GearTypeIcon::new));
     public static final IIconSerializer<?> MOD_ID = register(new ModIdIcon.Serializer(Iconify.getId("mod_id"), ModIdIcon::new));
     public static final IIconSerializer<?> TAG = register(new TagIcon.Serializer(Iconify.getId("tag"), TagIcon::new));
-    public static final IIconSerializer<?> TOOL_TYPE = register(new ToolTypeIcon.Serializer(Iconify.getId("tool_type"), ToolTypeIcon::new));
+    public static final IIconSerializer<?> TOOL_ACTION = register(new ToolActionIcon.Serializer(Iconify.getId("tool_action"), ToolActionIcon::new));
 
     private IconSerializers() {}
 
@@ -36,7 +36,7 @@ public final class IconSerializers {
     }
 
     public static IIcon deserialize(ResourceLocation id, JsonObject json) {
-        String typeStr = JSONUtils.getAsString(json, "type");
+        String typeStr = GsonHelper.getAsString(json, "type");
         ResourceLocation type = Iconify.getIdWithDefaultNamespace(typeStr);
         Iconify.LOGGER.debug("deserialize '{}' (type {})", id, type);
 
@@ -47,7 +47,7 @@ public final class IconSerializers {
         return serializer.deserialize(id, json);
     }
 
-    public static IIcon read(PacketBuffer buffer) {
+    public static IIcon read(FriendlyByteBuf buffer) {
         ResourceLocation id = buffer.readResourceLocation();
         ResourceLocation type = buffer.readResourceLocation();
         Iconify.LOGGER.debug("read '{}', (type {})", id, type);
@@ -60,7 +60,7 @@ public final class IconSerializers {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends IIcon> void write(T icon, PacketBuffer buffer) {
+    public static <T extends IIcon> void write(T icon, FriendlyByteBuf buffer) {
         ResourceLocation id = icon.getId();
         ResourceLocation type = icon.getSerializer().getName();
         Iconify.LOGGER.debug("write '{}' (type {})", id, type);

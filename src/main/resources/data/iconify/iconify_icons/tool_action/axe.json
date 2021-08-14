@@ -1,0 +1,8 @@
+{
+  "type": "iconify:tool_action",
+  "group": "iconify:tool_actions",
+  "icon": {
+    "texture": "minecraft:item/iron_axe"
+  },
+  "tool_action": "axe_dig"
+}

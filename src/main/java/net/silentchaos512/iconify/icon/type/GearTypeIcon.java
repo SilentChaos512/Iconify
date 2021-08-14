@@ -4,9 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
 import net.silentchaos512.iconify.compat.gear.SGearProxy;
 import net.silentchaos512.iconify.icon.IconSerializers;
@@ -57,7 +57,7 @@ public class GearTypeIcon extends SimpleIcon {
         }
 
         @Override
-        public GearTypeIcon read(ResourceLocation id, PacketBuffer buffer) {
+        public GearTypeIcon read(ResourceLocation id, FriendlyByteBuf buffer) {
             GearTypeIcon icon = super.read(id, buffer);
             int typeCount = buffer.readByte();
             for (int i = 0; i < typeCount; ++i) {
@@ -67,7 +67,7 @@ public class GearTypeIcon extends SimpleIcon {
         }
 
         @Override
-        public void write(PacketBuffer buffer, GearTypeIcon icon) {
+        public void write(FriendlyByteBuf buffer, GearTypeIcon icon) {
             super.write(buffer, icon);
             buffer.writeByte(icon.gearTypes.size());
             icon.gearTypes.forEach(buffer::writeUtf);

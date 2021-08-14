@@ -1,8 +1,8 @@
 package net.silentchaos512.iconify.icon.function;
 
 import com.google.gson.JsonObject;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.ITextFunction;
 import net.silentchaos512.iconify.api.icon.ITextFunctionSerializer;
 
@@ -44,12 +44,12 @@ public abstract class AbstractTextFunctionSerializer<T extends ITextFunction> im
         }
 
         @Override
-        public T read(PacketBuffer buffer) {
+        public T read(FriendlyByteBuf buffer) {
             return this.factory.get();
         }
 
         @Override
-        public void write(PacketBuffer buffer, T function) {
+        public void write(FriendlyByteBuf buffer, T function) {
             // NO-OP
         }
     }

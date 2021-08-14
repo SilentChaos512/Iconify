@@ -1,8 +1,8 @@
 package net.silentchaos512.iconify.api.icon;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ public interface IIcon {
 
     ResourceLocation getIconTexture();
 
-    Optional<ITextComponent> getIconText(ItemStack stack);
+    Optional<Component> getIconText(ItemStack stack);
 
     boolean test(ItemStack stack);
 

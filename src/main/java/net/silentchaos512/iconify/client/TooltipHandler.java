@@ -1,14 +1,14 @@
 package net.silentchaos512.iconify.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.silentchaos512.iconify.Iconify;
 import net.silentchaos512.iconify.api.icon.IIcon;
 import net.silentchaos512.iconify.icon.IconManager;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public final class TooltipHandler {
                 x += 11;
 
                 // render text
-                Optional<ITextComponent> text = icon.getIconText(event.getStack());
+                Optional<Component> text = icon.getIconText(event.getStack());
                 if (text.isPresent()) {
                     x += renderText(event, text.get(), x + 2, y);
                 }
@@ -57,32 +56,30 @@ public final class TooltipHandler {
         return icon.test(stack) && (icon.isVisibleWhenTextEmpty() || icon.getIconText(stack).isPresent());
     }
 
-    private static int renderText(RenderTooltipEvent event, ITextComponent text, int x, int y) {
+    private static int renderText(RenderTooltipEvent event, Component text, int x, int y) {
         event.getMatrixStack().pushPose();
         float scale = 0.7f;
         event.getMatrixStack().scale(scale, scale, scale);
         event.getFontRenderer().drawShadow(event.getMatrixStack(), text.getVisualOrderText(), x / scale, y / scale + 4, -1);
         event.getMatrixStack().popPose();
+
         int length = event.getFontRenderer().width(text);
         int spacing = length > 0 ? 4 : 0;
         return Math.round(length * scale) + spacing;
     }
 
     public static void renderTexture(ResourceLocation texture, float scale, int x, int y, int width, int height) {
-        RenderSystem.disableLighting();
         RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderTexture(0, texture);
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        RenderSystem.defaultAlphaFunc();
-
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
-        Minecraft.getInstance().getTextureManager().bind(texture);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.vertex(x, y + height * scale, 0.0)
                 .uv(0, 1)
                 .color(255, 255, 255, 255).endVertex();
@@ -97,13 +94,9 @@ public final class TooltipHandler {
                 .color(255, 255, 255, 255).endVertex();
         tessellator.end();
 
-        RenderSystem.disableBlend();
-        RenderSystem.color4f(1f, 1f, 1f, 1f);
-
-        RenderSystem.disableRescaleNormal();
-        RenderHelper.turnOff();
-        RenderSystem.disableLighting();
-        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     private void drawItemStack(ItemStack stack, int x, int y) {

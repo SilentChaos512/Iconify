@@ -1,9 +1,9 @@
 package net.silentchaos512.iconify.icon.type;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.silentchaos512.iconify.api.icon.IIconSerializer;
 import net.silentchaos512.iconify.icon.IconSerializers;
 
@@ -35,12 +35,12 @@ public class FoodIcon extends SimpleIcon {
         }
 
         @Override
-        public FoodIcon read(ResourceLocation id, PacketBuffer buffer) {
+        public FoodIcon read(ResourceLocation id, FriendlyByteBuf buffer) {
             return super.read(id, buffer);
         }
 
         @Override
-        public void write(PacketBuffer buffer, FoodIcon icon) {
+        public void write(FriendlyByteBuf buffer, FoodIcon icon) {
             super.write(buffer, icon);
         }
     }
